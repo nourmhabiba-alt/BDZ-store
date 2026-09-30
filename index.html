@@ -2,133 +2,458 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Generator</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BDZ STORE - Custom Tote Bags</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
     body {
-      background-color: #faf7f8;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #fdf2f8;
+      color: #334155;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Gradient Theme Definitions */
+    .bg-theme-ocean {
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+    }
+    .bg-theme-pink {
+      background: linear-gradient(135deg, #ec4899, #f472b6);
+    }
+    .bg-theme-autumn {
+      background: linear-gradient(135deg, #ea580c, #fbbf24);
+    }
+    .bg-theme-night {
+      background: linear-gradient(135deg, #4c1d95, #8b5cf6);
+    }
+
+    /* Custom Tote Bag Silhouette Simulation */
+    .tote-bag-container {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    .tote-handle {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 45%;
+      height: 35%;
+      border: 8px solid rgba(255, 255, 255, 0.7);
+      border-bottom: none;
+      border-radius: 40px 40px 0 0;
+      z-index: 1;
+    }
+
+    .tote-body {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 75%;
+      border-radius: 16px 16px 24px 24px;
       display: flex;
-      justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+      justify-content: center;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+      overflow: hidden;
     }
-    .card {
-      background: #ffffff;
-      padding: 32px;
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+    .tote-body-mini {
+      position: absolute;
+      bottom: 0;
       width: 100%;
-      max-width: 420px;
-      text-align: center;
-      border: 1px solid #f0e6eb;
-    }
-    h2 {
-      margin-top: 0;
-      color: #1a1a1a;
-      font-size: 24px;
-      letter-spacing: -0.5px;
-    }
-    p {
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 24px;
-    }
-    input {
-      width: 100%;
-      padding: 14px 18px;
-      border: 1.5px solid #e5d8e0;
-      border-radius: 12px;
-      font-size: 15px;
-      outline: none;
-      transition: all 0.2s ease;
-      margin-bottom: 20px;
-    }
-    input:focus {
-      border-color: #ff2a7a;
-      box-shadow: 0 0 0 3px rgba(255, 42, 122, 0.15);
-    }
-    #qrcode {
+      height: 72%;
+      border-radius: 12px 12px 18px 18px;
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding: 20px;
-      background: #fff;
-      border-radius: 16px;
-      border: 1px solid #f0e6eb;
-      min-height: 220px;
-      margin-bottom: 20px;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 2;
     }
-    #qrcode img {
-      border-radius: 8px;
+
+    .tote-handle-mini {
+      position: absolute;
+      top: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 42%;
+      height: 32%;
+      border: 5px solid rgba(255, 255, 255, 0.75);
+      border-bottom: none;
+      border-radius: 20px 20px 0 0;
+      z-index: 1;
     }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      background: #ff2a7a;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s ease;
+
+    /* Modal Animation */
+    .toast-slide {
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    .btn:hover {
-      background: #e0206b;
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col pb-12">
 
-<div class="card">
-  <h2>QR Code Generator</h2>
-  <p>Enter your website link or payment URL below:</p>
-  
-  <input type="text" id="text" placeholder="https://yourwebsite.com or payment link..." value="https://bdz-store.com">
-  
-  <div id="qrcode"></div>
+  <!-- HEADER & NAVIGATION -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-pink-100 shadow-sm">
+    <div class="max-w-md mx-auto px-4 py-3 flex flex-col items-center">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-2xl">🛍️</span>
+        <h1 class="text-2xl font-extrabold tracking-tight text-pink-600">BDZ STORE</h1>
+      </div>
+      <nav class="flex w-full bg-pink-50 p-1 rounded-xl gap-1">
+        <button id="nav-shop" onclick="switchTab('shop')" class="flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200 bg-pink-500 text-white shadow-sm">
+          Shop
+        </button>
+        <button id="nav-custom" onclick="switchTab('custom')" class="flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200 text-pink-700 hover:bg-pink-100/50">
+          Customize
+        </button>
+        <button id="nav-cart" onclick="switchTab('cart')" class="flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200 text-pink-700 hover:bg-pink-100/50 relative">
+          Cart (<span id="cart-badge">0</span>)
+        </button>
+      </nav>
+    </div>
+  </header>
 
-  <button class="btn" onclick="downloadQR()">Download QR Code</button>
-</div>
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-grow max-w-md w-full mx-auto p-4">
 
-<script>
-  const qrContainer = document.getElementById("qrcode");
-  const textInput = document.getElementById("text");
+    <!-- TAB 1: SHOP PAGE -->
+    <section id="page-shop" class="space-y-4">
+      <div class="bg-gradient-to-r from-pink-500 to-rose-400 text-white p-4 rounded-2xl shadow-sm text-center mb-6">
+        <h2 class="text-lg font-bold">Personalized Tote Collection</h2>
+        <p class="text-xs text-pink-100 mt-1">Tap any bag below to customize your word & colors!</p>
+      </div>
 
-  const qrcode = new QRCode(qrContainer, {
-    text: textInput.value,
-    width: 200,
-    height: 200,
-    colorDark : "#1a1a1a",
-    colorLight : "#ffffff",
-    correctLevel : QRCode.CorrectLevel.H
-  });
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Ocean Blue Bag Card -->
+        <div onclick="openCustomizer('Ocean Blue', 'bg-theme-ocean')" class="bg-white p-3 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer flex flex-col items-center">
+          <div class="relative w-full aspect-square mb-2">
+            <div class="tote-handle-mini"></div>
+            <div class="tote-body-mini bg-theme-ocean">
+              <span class="text-white font-extrabold text-sm tracking-wider drop-shadow">BDZ</span>
+            </div>
+          </div>
+          <h3 class="font-bold text-gray-800 text-xs sm:text-sm text-center mt-1">Ocean Blue Bag</h3>
+          <p class="text-pink-600 font-extrabold text-xs mt-0.5">20 SAR</p>
+          <span class="mt-2 text-[10px] bg-pink-50 text-pink-600 font-bold px-2 py-1 rounded-full border border-pink-100">Customize ➔</span>
+        </div>
 
-  textInput.addEventListener("input", (e) => {
-    const value = e.target.value.trim();
-    qrcode.clear();
-    if (value) {
-      qrcode.makeCode(value);
+        <!-- Pink Rush Bag Card -->
+        <div onclick="openCustomizer('Pink Rush', 'bg-theme-pink')" class="bg-white p-3 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer flex flex-col items-center">
+          <div class="relative w-full aspect-square mb-2">
+            <div class="tote-handle-mini"></div>
+            <div class="tote-body-mini bg-theme-pink">
+              <span class="text-white font-extrabold text-sm tracking-wider drop-shadow">BDZ</span>
+            </div>
+          </div>
+          <h3 class="font-bold text-gray-800 text-xs sm:text-sm text-center mt-1">Pink Rush Bag</h3>
+          <p class="text-pink-600 font-extrabold text-xs mt-0.5">20 SAR</p>
+          <span class="mt-2 text-[10px] bg-pink-50 text-pink-600 font-bold px-2 py-1 rounded-full border border-pink-100">Customize ➔</span>
+        </div>
+
+        <!-- Aesthetic Autumn Bag Card -->
+        <div onclick="openCustomizer('Aesthetic Autumn', 'bg-theme-autumn')" class="bg-white p-3 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer flex flex-col items-center">
+          <div class="relative w-full aspect-square mb-2">
+            <div class="tote-handle-mini"></div>
+            <div class="tote-body-mini bg-theme-autumn">
+              <span class="text-white font-extrabold text-sm tracking-wider drop-shadow">BDZ</span>
+            </div>
+          </div>
+          <h3 class="font-bold text-gray-800 text-xs sm:text-sm text-center mt-1">Aesthetic Autumn</h3>
+          <p class="text-pink-600 font-extrabold text-xs mt-0.5">20 SAR</p>
+          <span class="mt-2 text-[10px] bg-pink-50 text-pink-600 font-bold px-2 py-1 rounded-full border border-pink-100">Customize ➔</span>
+        </div>
+
+        <!-- Night Purple Bag Card -->
+        <div onclick="openCustomizer('Night Purple', 'bg-theme-night')" class="bg-white p-3 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer flex flex-col items-center">
+          <div class="relative w-full aspect-square mb-2">
+            <div class="tote-handle-mini"></div>
+            <div class="tote-body-mini bg-theme-night">
+              <span class="text-white font-extrabold text-sm tracking-wider drop-shadow">BDZ</span>
+            </div>
+          </div>
+          <h3 class="font-bold text-gray-800 text-xs sm:text-sm text-center mt-1">Night Purple Bag</h3>
+          <p class="text-pink-600 font-extrabold text-xs mt-0.5">20 SAR</p>
+          <span class="mt-2 text-[10px] bg-pink-50 text-pink-600 font-bold px-2 py-1 rounded-full border border-pink-100">Customize ➔</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CUSTOMIZE PAGE -->
+    <section id="page-custom" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-3xl border border-pink-100 shadow-sm">
+        
+        <!-- Interactive Live Bag Preview -->
+        <div class="tote-bag-container my-4">
+          <div class="tote-handle"></div>
+          <div id="preview-bag-body" class="tote-body bg-theme-pink transition-all duration-300">
+            <span id="preview-text" class="text-white font-extrabold text-xl tracking-wider text-center px-4 break-all drop-shadow-md">
+              BDZ
+            </span>
+          </div>
+        </div>
+
+        <div class="text-center mb-6">
+          <span class="inline-block bg-pink-100 text-pink-700 text-xs font-bold px-3 py-1 rounded-full">
+            Standard Price: 20 SAR
+          </span>
+        </div>
+
+        <!-- Customization Controls -->
+        <div class="space-y-4">
+          <!-- Theme Selection Dropdown -->
+          <div>
+            <label for="select-theme" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Select Color Theme
+            </label>
+            <select id="select-theme" onchange="updateLivePreview()" class="w-full bg-pink-50/50 border border-pink-200 text-gray-800 text-sm font-semibold rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <option value="bg-theme-pink" data-name="Pink Rush">Pink Rush</option>
+              <option value="bg-theme-ocean" data-name="Ocean Blue">Ocean Blue</option>
+              <option value="bg-theme-autumn" data-name="Aesthetic Autumn">Aesthetic Autumn</option>
+              <option value="bg-theme-night" data-name="Night Purple">Night Purple</option>
+            </select>
+          </div>
+
+          <!-- Custom Text Input -->
+          <div>
+            <label for="input-custom-word" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Fill in customized word
+            </label>
+            <input type="text" id="input-custom-word" maxlength="18" placeholder="e.g. your name or phrase" value="BDZ" oninput="updateLivePreview()" class="w-full bg-pink-50/50 border border-pink-200 text-gray-800 text-sm font-semibold rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+          </div>
+
+          <!-- Text Color Selector -->
+          <div>
+            <label for="select-text-color" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Text Color
+            </label>
+            <select id="select-text-color" onchange="updateLivePreview()" class="w-full bg-pink-50/50 border border-pink-200 text-gray-800 text-sm font-semibold rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <option value="text-white">White</option>
+              <option value="text-black">Black</option>
+            </select>
+          </div>
+
+          <!-- Add to Cart CTA -->
+          <button onclick="handleAddToCart()" class="w-full bg-pink-500 hover:bg-pink-600 active:scale-98 text-white font-extrabold text-base py-4 rounded-xl shadow-md transition-all duration-200 mt-2">
+            Add to Cart (20 SAR)
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: CART PAGE -->
+    <section id="page-cart" class="hidden space-y-4">
+      <div id="cart-items-list" class="space-y-3">
+        <!-- Dynamic items will render here -->
+      </div>
+
+      <!-- Cart Summary Card -->
+      <div id="cart-summary" class="hidden bg-white p-5 rounded-2xl border border-pink-100 shadow-sm space-y-4">
+        <div class="flex justify-between items-center text-lg font-extrabold border-b border-gray-100 pb-3">
+          <span class="text-gray-700">Total Price:</span>
+          <span class="text-pink-600"><span id="cart-total-value">0</span> SAR</span>
+        </div>
+        
+        <button onclick="handlePlaceOrder()" class="w-full bg-pink-500 hover:bg-pink-600 active:scale-98 text-white font-extrabold text-base py-4 rounded-xl shadow-md transition-all duration-200">
+          Place Order
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CUSTOM ALERT MODAL -->
+  <div id="custom-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-xl toast-slide">
+      <div class="text-4xl">🎉</div>
+      <h3 id="modal-title" class="text-lg font-bold text-gray-900">Success!</h3>
+      <p id="modal-message" class="text-xs text-gray-600">Your order has been placed.</p>
+      <button onclick="closeModal()" class="w-full bg-pink-500 text-white font-bold py-3 rounded-xl">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let cart = [];
+
+    // Switch between Shop, Customize, and Cart tabs
+    function switchTab(tabName) {
+      const tabs = ['shop', 'custom', 'cart'];
+      
+      tabs.forEach(tab => {
+        const pageElem = document.getElementById(`page-${tab}`);
+        const navBtn = document.getElementById(`nav-${tab}`);
+        
+        if (tab === tabName) {
+          pageElem.classList.remove('hidden');
+          navBtn.className = "flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200 bg-pink-500 text-white shadow-sm";
+        } else {
+          pageElem.classList.add('hidden');
+          navBtn.className = "flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200 text-pink-700 hover:bg-pink-100/50";
+        }
+      });
+
+      if (tabName === 'cart') {
+        renderCartUI();
+      }
     }
-  });
 
-  function downloadQR() {
-    const img = qrContainer.querySelector("img");
-    if (img && img.src) {
-      const link = document.createElement("a");
-      link.href = img.src;
-      link.download = "qrcode.png";
-      link.click();
+    // Direct entrance from clicking a product card in Shop
+    function openCustomizer(themeName, themeClass) {
+      const themeSelect = document.getElementById('select-theme');
+      themeSelect.value = themeClass;
+      
+      updateLivePreview();
+      switchTab('custom');
     }
-  }
-</script>
 
+    // Live sync preview updates in Customizer Studio
+    function updateLivePreview() {
+      const themeClass = document.getElementById('select-theme').value;
+      const customWord = document.getElementById('input-custom-word').value || 'BDZ';
+      const textColorClass = document.getElementById('select-text-color').value;
+
+      const previewBody = document.getElementById('preview-bag-body');
+      const previewText = document.getElementById('preview-text');
+
+      // Update background gradient
+      previewBody.className = `tote-body ${themeClass} transition-all duration-300`;
+      
+      // Update custom text
+      previewText.textContent = customWord;
+
+      // Update text color
+      previewText.className = `font-extrabold text-xl tracking-wider text-center px-4 break-all drop-shadow-md ${textColorClass}`;
+    }
+
+    // Add current custom tote item to cart
+    function handleAddToCart() {
+      const themeSelect = document.getElementById('select-theme');
+      const selectedOption = themeSelect.options[themeSelect.selectedIndex];
+      
+      const themeName = selectedOption.getAttribute('data-name') || 'Custom Tote';
+      const themeClass = themeSelect.value;
+      const customWord = document.getElementById('input-custom-word').value || 'BDZ';
+      const textColor = document.getElementById('select-text-color').value === 'text-white' ? 'White' : 'Black';
+
+      const cartItem = {
+        id: Date.now(),
+        themeName: themeName,
+        themeClass: themeClass,
+        word: customWord,
+        textColor: textColor,
+        price: 20
+      };
+
+      cart.push(cartItem);
+      updateCartBadge();
+      switchTab('cart');
+    }
+
+    // Update cart badge indicator count
+    function updateCartBadge() {
+      document.getElementById('cart-badge').textContent = cart.length;
+    }
+
+    // Render elements inside the Cart Page
+    function renderCartUI() {
+      const listContainer = document.getElementById('cart-items-list');
+      const summaryContainer = document.getElementById('cart-summary');
+      const totalValueElem = document.getElementById('cart-total-value');
+
+      if (cart.length === 0) {
+        listContainer.innerHTML = `
+          <div class="bg-white p-8 rounded-3xl border border-pink-100 text-center space-y-3 shadow-sm">
+            <div class="text-4xl">🛍️</div>
+            <h3 class="font-bold text-gray-800 text-base">Your cart is empty</h3>
+            <p class="text-xs text-gray-500">Looks like you haven't added any customized bags yet.</p>
+            <button onclick="switchTab('shop')" class="inline-block bg-pink-50 text-pink-600 font-bold text-xs px-4 py-2 rounded-xl border border-pink-200 mt-2">
+              Explore Collection
+            </button>
+          </div>
+        `;
+        summaryContainer.classList.add('hidden');
+        return;
+      }
+
+      summaryContainer.classList.remove('hidden');
+      
+      let totalSAR = 0;
+      let html = '';
+
+      cart.forEach((item, index) => {
+        totalSAR += item.price;
+        html += `
+          <div class="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl ${item.themeClass} flex items-center justify-center text-white font-extrabold text-xs shadow-inner">
+                BDZ
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-gray-800">${item.themeName} Bag</h4>
+                <p class="text-xs text-gray-500">Word: <span class="font-bold text-gray-700">"${item.word}"</span> (${item.textColor})</p>
+                <p class="text-xs font-extrabold text-pink-600 mt-0.5">${item.price} SAR</p>
+              </div>
+            </div>
+            <button onclick="removeItemFromCart(${index})" class="text-gray-400 hover:text-red-500 p-2 font-bold text-xs">
+              ✕
+            </button>
+          </div>
+        `;
+      });
+
+      listContainer.innerHTML = html;
+      totalValueElem.textContent = totalSAR;
+    }
+
+    // Remove single item from cart array
+    function removeItemFromCart(index) {
+      cart.splice(index, 1);
+      updateCartBadge();
+      renderCartUI();
+    }
+
+    // Submit order action
+    function handlePlaceOrder() {
+      if (cart.length === 0) return;
+
+      const totalSAR = cart.reduce((sum, item) => sum + item.price, 0);
+      showModal("Order Placed!", `Thank you for your order! Total amount: ${totalSAR} SAR. Your custom tote bags will be printed shortly.`);
+      
+      cart = [];
+      updateCartBadge();
+    }
+
+    // Modal Helpers
+    function showModal(title, message) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-message').textContent = message;
+      document.getElementById('custom-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('custom-modal').classList.add('hidden');
+      switchTab('shop');
+    }
+
+    // Initial setup on window load
+    window.onload = function() {
+      updateLivePreview();
+    };
+  </script>
 </body>
 </html>
